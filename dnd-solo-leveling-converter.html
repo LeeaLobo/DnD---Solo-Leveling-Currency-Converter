@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DnD - Solo Leveling Currency Converter</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+            background-image: url('https://w0.peakpx.com/wallpaper/1018/265/HD-wallpaper-sung-jin-woo-solo-leveling-anime.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        .container {
+            background-color: rgba(0, 0, 0, 0.9);
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            padding: 30px;
+            width: 100%;
+            max-width: 600px;
+            margin-top: 20px;
+            border: 1px solid rgba(75, 75, 75, 0.7);
+        }
+        h2 {
+            color: #e0e0e0;
+        }
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+        .input-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .input-group label {
+            width: 120px;
+            flex-shrink: 0;
+            font-weight: 600;
+            color: #a0a0a0;
+        }
+        .input-group input {
+            flex-grow: 1;
+            padding: 12px 15px;
+            border: 2px solid #4a4a4a;
+            background-color: #333333;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            color: #e0e0e0;
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #8a2be2;
+            box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.4);
+        }
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        .btn {
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out, box-shadow 0.2s ease-in-out;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        .btn-primary {
+            background-color: #8a2be2;
+            color: #ffffff;
+            border: 1px solid #6a0dad;
+        }
+        .btn-primary:hover {
+            background-color: #6a0dad;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+        .btn-secondary {
+            background-color: #4a4a4a;
+            color: #e0e0e0;
+            border: 1px solid #333333;
+        }
+        .btn-secondary:hover {
+            background-color: #333333;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+        .rates-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #4a4a4a;
+        }
+        .rates-section h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #e0e0e0;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .rates-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 10px;
+        }
+        .rate-item {
+            background-color: #2a2a2a;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid #3a3a3a;
+            font-size: 0.95rem;
+            color: #b0b0b0;
+        }
+        .llm-suggestion-container {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #1a1a1a;
+            border: 1px solid #3a3a3a;
+            border-radius: 8px;
+            color: #e0e0e0;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .llm-suggestion-container.loading {
+            color: #8a2be2;
+        }
+        .llm-button {
+            margin-left: 10px;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            background-color: #8a2be2;
+            color: #ffffff;
+            border: none;
+            transition: background-color 0.2s ease-in-out;
+            white-space: nowrap;
+        }
+        .llm-button:hover {
+            background-color: #6a0dad;
+        }
+        .llm-button:disabled {
+            background-color: #555555;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-3xl font-bold text-center mb-8">DnD - Solo Leveling Currency Converter</h2>
+
+        <div class="input-group">
+            <label for="customCurrency">DnD 5e GP</label>
+            <input type="number" id="customCurrency" placeholder="Enter DnD 5e GP amount">
+            <button id="dndGpSuggestBtn" class="llm-button">✨ Suggest Uses</button>
+        </div>
+
+        <div class="input-group">
+            <label for="slg">Solo Leveling Gold</label>
+            <input type="number" id="slg" placeholder="Enter Solo Leveling Gold amount">
+            <button id="slgSuggestBtn" class="llm-button">✨ Suggest Uses</button>
+        </div>
+
+        <div class="input-group">
+            <label for="krw">KRW (₩)</label>
+            <input type="number" id="krw" placeholder="Enter KRW amount">
+        </div>
+
+        <div class="input-group">
+            <label for="usd">USD ($)</label>
+            <input type="number" id="usd" placeholder="Enter USD amount">
+        </div>
+
+        <div class="button-group">
+            <button id="resetBtn" class="btn btn-secondary">Reset</button>
+        </div>
+
+        <div class="llm-suggestion-container" id="llmSuggestion">
+            Enter an amount in DnD 5e GP or Solo Leveling Gold and click "Suggest Uses" to get ideas!
+        </div>
+
+        <div class="rates-section">
+            <h3>Current Conversion Rates (Assumed)</h3>
+            <div class="rates-list">
+                <div class="rate-item">1 DnD 5e GP = 200 Solo Leveling Gold</div>
+                <div class="rate-item">1 Solo Leveling Gold = 0.005 DnD 5e GP</div>
+                <div class="rate-item">1 Solo Leveling Gold = 40 KRW</div>
+                <div class="rate-item">1 KRW = 0.0250 Solo Leveling Gold (approx)</div>
+                <div class="rate-item">1 Solo Leveling Gold = 0.0296 USD</div>
+                <div class="rate-item">1 USD = 33.75 Solo Leveling Gold</div>
+                <div class="rate-item">1 USD = 1350 KRW</div>
+                <div class="rate-item">1 KRW = 0.00074 USD</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const rates = {
+            usdToKrw: 1350,
+            krwToUsd: 1 / 1350,
+            slgToKrw: 40,
+            krwToSlg: 1 / 40,
+            customToSlg: 200,
+            slgToCustom: 1 / 200
+        };
+        rates.slgToUsd = rates.slgToKrw / rates.usdToKrw;
+        rates.usdToSlg = rates.usdToKrw / rates.slgToKrw;
+
+        const krwInput = document.getElementById('krw');
+        const usdInput = document.getElementById('usd');
+        const slgInput = document.getElementById('slg');
+        const customCurrencyInput = document.getElementById('customCurrency');
+        const resetBtn = document.getElementById('resetBtn');
+        const dndGpSuggestBtn = document.getElementById('dndGpSuggestBtn');
+        const slgSuggestBtn = document.getElementById('slgSuggestBtn');
+        const llmSuggestionDiv = document.getElementById('llmSuggestion');
+
+        function convertCurrencies(baseCurrency, value) {
+            let usdValue = 0;
+
+            if (baseCurrency === 'krw') {
+                usdValue = value * rates.krwToUsd;
+            } else if (baseCurrency === 'usd') {
+                usdValue = value;
+            } else if (baseCurrency === 'slg') {
+                usdValue = value * rates.slgToUsd;
+            } else if (baseCurrency === 'custom') {
+                const slgValue = value * rates.customToSlg;
+                usdValue = slgValue * rates.slgToUsd;
+            }
+
+            if (baseCurrency !== 'krw') {
+                krwInput.value = (usdValue * rates.usdToKrw).toFixed(2);
+            }
+            if (baseCurrency !== 'usd') {
+                usdInput.value = usdValue.toFixed(2);
+            }
+            if (baseCurrency !== 'slg') {
+                slgInput.value = (usdValue * rates.usdToSlg).toFixed(2);
+            }
+            if (baseCurrency !== 'custom') {
+                const slgEquivalent = usdValue * rates.usdToSlg;
+                customCurrencyInput.value = (slgEquivalent * rates.slgToCustom).toFixed(2);
+            }
+        }
+
+        async function getLlmSuggestion(currencyName, amount) {
+            if (isNaN(amount) || amount <= 0) {
+                llmSuggestionDiv.textContent = `Please enter a valid positive amount for ${currencyName}.`;
+                return;
+            }
+
+            llmSuggestionDiv.textContent = 'Generating suggestions...';
+            llmSuggestionDiv.classList.add('loading');
+            dndGpSuggestBtn.disabled = true;
+            slgSuggestBtn.disabled = true;
+
+            let prompt = "";
+            if (currencyName === "DnD 5e GP") {
+                prompt = `Generate a short, creative suggestion of what ${amount} DnD 5e GP (Gold Pieces) could realistically buy or be used for in a typical Dungeons & Dragons 5th Edition fantasy setting. Keep it concise and immersive. Start directly with the suggestion, e.g., "Enough to buy a..."`;
+            } else if (currencyName === "Solo Leveling Gold") {
+                prompt = `Generate a short, creative suggestion of what ${amount} Solo Leveling Gold could realistically buy or be used for in the Solo Leveling universe. Keep it concise and immersive. Start directly with the suggestion, e.g., "Enough to purchase a..."`;
+            }
+
+            try {
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                const payload = { contents: chatHistory };
+                const apiKey = "";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    llmSuggestionDiv.textContent = `${currencyName} Suggestion: ${text}`;
+                } else {
+                    llmSuggestionDiv.textContent = 'Could not generate suggestion. Please try again.';
+                    console.error('Gemini API response structure unexpected:', result);
+                }
+            } catch (error) {
+                llmSuggestionDiv.textContent = 'Error generating suggestion. Please check your network connection.';
+                console.error('Error calling Gemini API:', error);
+            } finally {
+                llmSuggestionDiv.classList.remove('loading');
+                dndGpSuggestBtn.disabled = false;
+                slgSuggestBtn.disabled = false;
+            }
+        }
+
+        customCurrencyInput.addEventListener('input', (e) => {
+            const value = parseFloat(e.target.value);
+            if (!isNaN(value)) {
+                convertCurrencies('custom', value);
+            } else {
+                krwInput.value = '';
+                usdInput.value = '';
+                slgInput.value = '';
+            }
+        });
+
+        slgInput.addEventListener('input', (e) => {
+            const value = parseFloat(e.target.value);
+            if (!isNaN(value)) {
+                convertCurrencies('slg', value);
+            } else {
+                krwInput.value = '';
+                usdInput.value = '';
+                customCurrencyInput.value = '';
+            }
+        });
+
+        krwInput.addEventListener('input', (e) => {
+            const value = parseFloat(e.target.value);
+            if (!isNaN(value)) {
+                convertCurrencies('krw', value);
+            } else {
+                usdInput.value = '';
+                slgInput.value = '';
+                customCurrencyInput.value = '';
+            }
+        });
+
+        usdInput.addEventListener('input', (e) => {
+            const value = parseFloat(e.target.value);
+            if (!isNaN(value)) {
+                convertCurrencies('usd', value);
+            } else {
+                krwInput.value = '';
+                slgInput.value = '';
+                customCurrencyInput.value = '';
+            }
+        });
+
+        dndGpSuggestBtn.addEventListener('click', () => {
+            const amount = parseFloat(customCurrencyInput.value);
+            getLlmSuggestion('DnD 5e GP', amount);
+        });
+
+        slgSuggestBtn.addEventListener('click', () => {
+            const amount = parseFloat(slgInput.value);
+            getLlmSuggestion('Solo Leveling Gold', amount);
+        });
+
+        resetBtn.addEventListener('click', () => {
+            krwInput.value = '';
+            usdInput.value = '';
+            slgInput.value = '';
+            customCurrencyInput.value = '';
+            llmSuggestionDiv.textContent = 'Enter an amount in DnD 5e GP or Solo Leveling Gold and click "Suggest Uses" to get ideas!';
+        });
+    </script>
+</body>
+</html>
